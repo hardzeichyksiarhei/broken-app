@@ -6,6 +6,9 @@ module.exports = function (req, res, next) {
         next();   // allowing options as a method for request
     } else {
         var sessionToken = req.headers.authorization;
+        if (sessionToken && sessionToken.indexOf('Bearer ') === 0) {
+            sessionToken = sessionToken.slice(7, sessionToken.length)
+        }
         console.log(sessionToken);
         if (!sessionToken) return res.status(403).send({ auth: false, message: "No token provided." });
         else {
