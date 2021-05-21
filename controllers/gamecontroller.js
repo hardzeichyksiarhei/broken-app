@@ -70,7 +70,6 @@ router.put('/update/:id', (req, res) => {
         {
             where: {
                 id: req.params.id,
-                owner_id: req.user
             }
         })
         .then(
