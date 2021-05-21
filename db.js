@@ -2,7 +2,8 @@ const Sequelize = require('sequelize');
                                 //database username   password
 const sequelize = new Sequelize('gamedb', 'postgres', 'ghastb0i', {
     host: 'localhost',
-    dialect: 'postgres'
+    dialect: 'postgres',
+    port: 5433
 })
 
 sequelize.authenticate().then(
