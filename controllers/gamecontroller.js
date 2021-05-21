@@ -93,7 +93,6 @@ router.delete('/remove/:id', (req, res) => {
     Game.destroy({
         where: {
             id: req.params.id,
-            owner_id: req.user.id
         }
     })
     .then(
