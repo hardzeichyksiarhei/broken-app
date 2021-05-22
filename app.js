@@ -5,7 +5,7 @@ const db = require('./db');
 const validateSession = require('./middleware/validate-session')
 
 const userRouter = require('./router/user.router');
-const game = require('./controllers/gamecontroller')
+const gameRouter = require('./router/game.router')
 
 const PORT = 4000
 
@@ -25,7 +25,7 @@ app.use('/', (req, res, next) => {
 app.use('/api/auth', userRouter);
 
 app.use(validateSession)
-app.use('/api/game', game);
+app.use('/api/game', gameRouter);
 
 app.use((err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
