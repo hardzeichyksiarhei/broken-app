@@ -27,6 +27,18 @@ app.use('/api/auth', userRouter);
 app.use(validateSession)
 app.use('/api/game', game);
 
+app.use((err, req, res, next) => {
+    err.statusCode = err.statusCode || 500;
+    err.status = err.status || 'ERROR';
+    err.code = err.code || 'SERVER_ERROR'
+  
+    res.status(err.statusCode).json({
+      status: err.status,
+      code: err.code,
+      message: err.message
+    });
+});
+
 app.listen(PORT, function() {
     console.log(`App is listening on ${PORT}`);
 })
