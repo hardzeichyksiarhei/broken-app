@@ -1,36 +1,31 @@
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
 
-var User = require('../db').import('../models/user');
+const AppError = require('../classes/appError.class');
+const catchErrors = require('../helpers/catchErrors');
 
-exports.signUp = async (req, res) => {
-    try {
-        const { full_name, username, password, email } = req.body.user;
-        const passwordHash = bcrypt.hashSync(password, 10);
-        const user = await User.create({ full_name, username, passwordHash, email, })
+const User = require('../db').import('../models/user');
 
-        let token = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
-        return res.status(StatusCodes.CREATED).json({ user, token })
-    } catch(error) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err.message)
-    }
-};
+exports.signUp = catchErrors(async (req, res) => {
+    const { full_name, username, password, email } = req.body.user;
+    const passwordHash = bcrypt.hashSync(password, 10);
+    const user = await User.create({ full_name, username, passwordHash, email, });
 
-exports.signIn = async (req, res) => {
+    let token = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
+    return res.status(StatusCodes.CREATED).json({ user, token });
+});
+
+exports.signIn = catchErrors(async (req, res) => {
     const {username, password} = req.body.user;
-    const user = await User.findOne({ where: { username } })
+    const user = await User.findOne({ where: { username } });
 
-    if (!user) {
-        return res.status(StatusCodes.FORBIDDEN).send({ error: "User not found." })
-    }
-
-    const isPasswordMatch = bcrypt.compare(password, user.passwordHash)
+    if (!user) throw new AppError("User not found", StatusCodes.UNAUTHORIZED, 'USER_NOT_FOUND');
     
-    if (!isPasswordMatch) {
-        return res.status(StatusCodes.BAD_GATEWAY).send({ error: "Passwords do not match." })
-    }
+    const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
+    
+    if (!isPasswordMatch) throw new AppError("Passwords do not match", StatusCodes.UNAUTHORIZED, 'PASSWORD_NOT_MATCH');
     
     const sessionToken = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
-    return res.json({ user, message: "Successfully authenticated.", sessionToken });
-};
+    return res.json({ user, message: "Successfully authenticated", sessionToken });
+});
