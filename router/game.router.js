@@ -7,8 +7,6 @@ router
     .put('/update/:id', gameController.updateById)
     .delete('/remove/:id', gameController.removeById);
 
-router
-    .get('/all', gameController.all)
-    .get('/:id', gameController.getById);
+router.get('/all', gameController.all).get('/:id', gameController.getById);
 
 module.exports = router;

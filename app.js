@@ -2,12 +2,12 @@ const express = require('express');
 
 const db = require('./db');
 
-const validateSession = require('./middleware/validate-session')
+const validateSession = require('./middleware/validate-session');
 
 const userRouter = require('./router/user.router');
-const gameRouter = require('./router/game.router')
+const gameRouter = require('./router/game.router');
 
-const PORT = 4000
+const PORT = 4000;
 
 const app = express();
 
@@ -24,21 +24,21 @@ app.use('/', (req, res, next) => {
 
 app.use('/api/auth', userRouter);
 
-app.use(validateSession)
+app.use(validateSession);
 app.use('/api/game', gameRouter);
 
 app.use((err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'ERROR';
-    err.code = err.code || 'SERVER_ERROR'
-  
+    err.code = err.code || 'SERVER_ERROR';
+
     res.status(err.statusCode).json({
-      status: err.status,
-      code: err.code,
-      message: err.message
+        status: err.status,
+        code: err.code,
+        message: err.message,
     });
 });
 
-app.listen(PORT, function() {
+app.listen(PORT, function () {
     console.log(`App is listening on ${PORT}`);
-})
+});
