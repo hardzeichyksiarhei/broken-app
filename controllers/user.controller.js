@@ -15,7 +15,7 @@ exports.signUp = catchErrors(async (req, res) => {
     if (userCheck) {
         throw new AppError(
             'User with provided username already exists',
-            StatusCodes.UNAUTHORIZED,
+            StatusCodes.CONFLICT, // or 422 Unprocessable Entity
             'USER_ALREADY_EXISTS'
         );
     }
@@ -30,14 +30,16 @@ exports.signIn = catchErrors(async (req, res) => {
     const { username, password } = req.body.user;
     const user = await User.findOne({ where: { username } });
 
-    if (!user) throw new AppError('User not found', StatusCodes.UNAUTHORIZED, 'USER_NOT_FOUND');
+    if (!user) {
+        throw new AppError('User is not exists', StatusCodes.BAD_REQUEST, 'USER_NOT_EXISTS');
+    }
 
     const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
 
     if (!isPasswordMatch) {
         throw new AppError(
             'Passwords do not match',
-            StatusCodes.UNAUTHORIZED,
+            StatusCodes.UNPROCESSABLE_ENTITY,
             'PASSWORD_NOT_MATCH'
         );
     }
