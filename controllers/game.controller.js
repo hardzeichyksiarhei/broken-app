@@ -7,7 +7,7 @@ const Game = require('../db').import('../models/game');
 
 exports.all = catchErrors(async (req, res) => {
     const games = await Game.findAll({ where: { owner_id: req.user.id } });
-    return res.status(200).json({ games, message: 'Game fetched' });
+    return res.status(StatusCodes.OK).json({ games, message: 'Game fetched' });
 });
 
 exports.getById = catchErrors(async (req, res) => {
@@ -30,7 +30,7 @@ exports.create = catchErrors(async (req, res) => {
         have_played,
     });
 
-    return res.status(StatusCodes.OK).json({ game, message: 'Game created' });
+    return res.status(StatusCodes.CREATED).json({ game, message: 'Game created' });
 });
 
 exports.updateById = catchErrors(async (req, res) => {

@@ -45,5 +45,8 @@ exports.signIn = catchErrors(async (req, res) => {
     const sessionToken = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', {
         expiresIn: 60 * 60 * 24,
     });
-    return res.json({ user, message: 'Successfully authenticated', sessionToken });
+
+    return res
+        .status(StatusCodes.OK)
+        .json({ user, message: 'Successfully authenticated', sessionToken });
 });
