@@ -1,9 +1,11 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('gamedb', 'postgres', 'ghastb0i', {
-    host: 'localhost',
+const { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD } = require('./config');
+
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+    host: DB_HOST,
     dialect: 'postgres',
-    // port: 5433
+    port: DB_PORT,
 });
 
 sequelize

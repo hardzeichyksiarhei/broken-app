@@ -7,7 +7,7 @@ const validateSession = require('./middleware/validate-session');
 const userRouter = require('./router/user.router');
 const gameRouter = require('./router/game.router');
 
-const PORT = 4000;
+const { PORT } = require('./config');
 
 const app = express();
 
