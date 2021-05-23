@@ -1,15 +1,44 @@
-var express = require('express');
-var app = express();
-var db = require('./db');
-var user = require('./controllers/usercontroller');
-var game = require('./controllers/gamecontroller')
+const express = require('express');
 
+const db = require('./db');
+
+const validateSession = require('./middleware/validate-session');
+
+const userRouter = require('./router/user.router');
+const gameRouter = require('./router/game.router');
+
+const { PORT } = require('./config');
+
+const app = express();
 
 db.sync();
-app.use(require('body-parser'));
-app.use('/api/auth', user);
-app.use(require('./middleware/validate-session'))
-app.use('/api/game', game);
-app.listen(function() {
-    console.log("App is listening on 4000");
-})
+app.use(express.json());
+
+app.use('/', (req, res, next) => {
+    if (req.originalUrl === '/') {
+        res.send('Service is running!');
+        return;
+    }
+    next();
+});
+
+app.use('/api/auth', userRouter);
+
+app.use(validateSession);
+app.use('/api/game', gameRouter);
+
+app.use((err, req, res, next) => {
+    err.statusCode = err.statusCode || 500;
+    err.status = err.status || 'ERROR';
+    err.code = err.code || 'SERVER_ERROR';
+
+    res.status(err.statusCode).json({
+        status: err.status,
+        code: err.code,
+        message: err.message,
+    });
+});
+
+app.listen(PORT, function () {
+    console.log(`App is listening on ${PORT}`);
+});
