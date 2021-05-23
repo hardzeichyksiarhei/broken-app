@@ -5,6 +5,8 @@ const { StatusCodes } = require('http-status-codes');
 const AppError = require('../classes/appError.class');
 const catchErrors = require('../helpers/catchErrors');
 
+const { JWT_SECRET_KEY } = require('../config');
+
 const User = require('../db').import('../models/user');
 
 exports.signUp = catchErrors(async (req, res) => {
@@ -22,7 +24,7 @@ exports.signUp = catchErrors(async (req, res) => {
 
     const user = await User.create({ full_name, username, passwordHash, email });
 
-    let token = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
+    let token = jwt.sign({ id: user.id }, JWT_SECRET_KEY, { expiresIn: 60 * 60 * 24 });
     return res.status(StatusCodes.CREATED).json({ user, token });
 });
 
@@ -44,7 +46,7 @@ exports.signIn = catchErrors(async (req, res) => {
         );
     }
 
-    const sessionToken = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', {
+    const sessionToken = jwt.sign({ id: user.id }, JWT_SECRET_KEY, {
         expiresIn: 60 * 60 * 24,
     });
 

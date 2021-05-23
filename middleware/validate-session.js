@@ -1,6 +1,8 @@
 const { StatusCodes } = require('http-status-codes');
 const jwt = require('jsonwebtoken');
 
+const { JWT_SECRET_KEY } = require('../config');
+
 const User = require('../db').import('../models/user');
 
 module.exports = async (req, res, next) => {
@@ -18,7 +20,7 @@ module.exports = async (req, res, next) => {
             throw new Error('Not authorized to access this resource. Auth token is not supplied');
         }
 
-        const decoded = jwt.verify(sessionToken, 'lets_play_sum_games_man');
+        const decoded = jwt.verify(sessionToken, JWT_SECRET_KEY);
 
         if (!decoded || !decoded.id) {
             throw new Error('Not authorized to access this resource. Token is not valid');

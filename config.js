@@ -8,9 +8,12 @@ dotenv.config({
 module.exports = {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT || 4000,
+
     DB_HOST: process.env.DB_HOST || 'localhost',
     DB_PORT: process.env.DB_PORT || 5432,
     DB_NAME: process.env.DB_NAME || 'gamedb',
     DB_USER: process.env.DB_USER || 'postgres',
     DB_PASSWORD: process.env.DB_PASSWORD,
+
+    JWT_SECRET_KEY: process.env.JWT_SECRET_KEY || 'lets_play_sum_games_man',
 };
