@@ -8,16 +8,16 @@ module.exports = async (req, res, next) => {
         return next(); // allowing options as a method for request
     }
 
-    let sessionToken = req.headers.authorization;
-    if (sessionToken && sessionToken.indexOf('Bearer ') === 0) {
-        sessionToken = sessionToken.slice(7, sessionToken.length);
-    }
-
-    if (!sessionToken) {
-        throw new Error('Not authorized to access this resource. Auth token is not supplied');
-    }
-
     try {
+        let sessionToken = req.headers.authorization;
+        if (sessionToken && sessionToken.indexOf('Bearer ') === 0) {
+            sessionToken = sessionToken.slice(7, sessionToken.length);
+        }
+
+        if (!sessionToken) {
+            throw new Error('Not authorized to access this resource. Auth token is not supplied');
+        }
+
         const decoded = jwt.verify(sessionToken, 'lets_play_sum_games_man');
 
         if (!decoded || !decoded.id) {
