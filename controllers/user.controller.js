@@ -10,6 +10,16 @@ const User = require('../db').import('../models/user');
 exports.signUp = catchErrors(async (req, res) => {
     const { full_name, username, password, email } = req.body.user;
     const passwordHash = bcrypt.hashSync(password, 10);
+
+    const userCheck = await User.findOne({ where: { username } });
+    if (userCheck) {
+        throw new AppError(
+            'User with provided username already exists',
+            StatusCodes.UNAUTHORIZED,
+            'USER_ALREADY_EXISTS'
+        );
+    }
+
     const user = await User.create({ full_name, username, passwordHash, email });
 
     let token = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
